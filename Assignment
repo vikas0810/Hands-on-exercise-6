@@ -1,0 +1,87 @@
+
+install.packages("rlist")
+library(XML)
+library(RCurl)
+
+#Storing URL
+
+my_url <- getURL("http://stats.espncricinfo.com/ci/content/records/284248.html")
+
+#Reading HTML tables 
+
+my_html <- readHTMLTable(my_url)
+
+my_table <- my_html[[1]]
+
+View(my_table)
+
+#Top 5 run scorers by years
+
+my_table[with(my_table, order(Runs, Player)), ] 
+
+View(my_table)
+
+Top5<-c(as.character(my_table$Player[1:5]))
+
+View(Top5)
+
+
+#Highest number of a times a player has become highest run scorer in a calendar year
+
+#Contribution of a player's country
+
+#First initialize the country's contribution as 0
+
+PAK=0
+AUS=0
+IND=0
+SL=0
+ENG=0
+WI=0
+SA=0
+
+#Looping data frame 
+
+for(i in 1:nrow(my_table))
+{
+  if(grepl("PAK",my_table$Player[i])){
+    PAK=PAK+1
+}else if(grepl("AUS",my_table$Player[i])){
+    AUS=AUS+1
+}else if(grepl("IND",my_table$Player[i])){
+    IND=IND+1
+}else if(grepl("SL",my_table$Player[i])){
+  SL=SL+1
+}else if(grepl("WI",my_table$Player[i])){
+  WI=WI+1
+}else if(grepl("ENG",my_table$Player[i])){
+  ENG=ENG+1
+}else if(grepl("SA",my_table$Player[i])){
+  SA=SA+1
+}else{
+  NULL}
+}    
+    
+#Country contibution 
+
+PAK_contri = 100*PAK/nrow(my_table)
+AUS_contri = 100*AUS/nrow(my_table)
+IND_contri = 100*IND/nrow(my_table)
+SL_contri = 100*SL/nrow(my_table)
+WI_contri = 100*WI/nrow(my_table)
+ENG_contri = 100*ENG/nrow(my_table)
+SA_contri = 100*SA/nrow(my_table)
+
+#Making vector for countries
+
+Cricket_Country <- c('PAK','AUS','IND','SL','WI','ENG','SA')
+
+#Making vector country_percentage
+
+country_percentage <- c(PAK_contri,AUS_contri,IND_contri,SL_contri,WI_contri,ENG_contri,SA_contri)
+
+#Making data frame to view each country's contribution  
+
+country_contribution <- data.frame(Cricket_Country,country_percentage)
+
+View(country_contribution)
